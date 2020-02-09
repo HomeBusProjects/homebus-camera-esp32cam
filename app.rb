@@ -66,6 +66,10 @@ class ESP32CamHomeBusApp < HomeBusApp
 
   def work!
     if !@resolution || _set_resolution
+      if @resolution
+        sleep(5)
+      end
+
       image = get_image
 
       if image
