@@ -70,7 +70,7 @@ class ESP32CamHomeBusApp < HomeBusApp
         sleep(5)
       end
 
-      image = get_image
+      image = _get_image
 
       if image
         obj = {
