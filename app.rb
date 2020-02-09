@@ -12,19 +12,23 @@ class ESP32CamHomeBusApp < HomeBusApp
   def initialize(options)
     @options = options
 
+    Dotenv.load('.env')
+    @url = @options['camera-url'] || ENV['CAMERA_URL']
+    @resolution = @options['camera-resolution'] || ENV['CAMERA_RESOLUTION']
+
     super
   end
 
 
   def setup!
-    Dotenv.load('.env')
-    @url = ENV['CAMERA_URL']
   end
 
-  def set_resolution
+  def _set_resolution
+    return true unless @resolution
+
     begin
       response = Timeout::timeout(30) do
-        uri = URI(@url + '/control?var=framesize&val=10')
+        uri = URI("#{@url}/control?var=framesize&val=#{@resolution}")
         response = Net::HTTP.get_response(uri)
       end
 
@@ -39,7 +43,7 @@ class ESP32CamHomeBusApp < HomeBusApp
     end
   end
 
-  def get_image
+  def _get_image
     begin
       response = Timeout::timeout(30) do
         uri = URI(@url + '/capture')
@@ -61,7 +65,7 @@ class ESP32CamHomeBusApp < HomeBusApp
   end
 
   def work!
-    if set_resolution
+    if !@resolution || _set_resolution
       image = get_image
 
       if image
@@ -78,7 +82,7 @@ class ESP32CamHomeBusApp < HomeBusApp
         puts "no image"
       end
     end
-    
+
     sleep 60
  end
 
@@ -95,11 +99,11 @@ class ESP32CamHomeBusApp < HomeBusApp
   end
 
   def friendly_location
-    'PDX Hackerspace'
+    ''
   end
 
   def serial_number
-    ''
+    @url
   end
 
   def pin
@@ -114,7 +118,7 @@ class ESP32CamHomeBusApp < HomeBusApp
         index: 0,
         accuracy: 0,
         precision: 0,
-        wo_topics: [ '/cameras' ],
+        wo_topics: [ 'org.homebus.still-image' ],
         ro_topics: [],
         rw_topics: []
       }
