@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:HomeBusProjects/ruby-homebus-application
-  revision: 5e1d6f54fa881d6f69790957ed1c7e1a516264c7
+  revision: 29e9fc3b3f6c8cebf9921b62c0f92132daf4bd35
   specs:
-    homebus_app (0.1.3)
+    homebus_app (0.2.0)
       dotenv
       mqtt
 

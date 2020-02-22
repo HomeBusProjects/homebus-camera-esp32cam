@@ -9,6 +9,10 @@ require 'base64'
 require 'timeout'
 
 class ESP32CamHomeBusApp < HomeBusApp
+  def DDC
+    'org.homebus.image'
+  end
+
   def initialize(options)
     @options = options
 
@@ -76,12 +80,11 @@ class ESP32CamHomeBusApp < HomeBusApp
         obj = {
           id: @uuid,
           timestamp: Time.now.to_i,
-          image: image
         }
 
-        @mqtt.publish '/homebus/device/' + @uuid,
-                      JSON.generate(obj),
-                      true
+        obj[DDC] = image
+
+        publish! DDC, obj
       else
         puts "no image"
       end
@@ -95,7 +98,7 @@ class ESP32CamHomeBusApp < HomeBusApp
   end
 
   def model
-    'D'
+    ''
   end
 
   def friendly_name
@@ -122,7 +125,7 @@ class ESP32CamHomeBusApp < HomeBusApp
         index: 0,
         accuracy: 0,
         precision: 0,
-        wo_topics: [ 'org.homebus.still-image' ],
+        wo_topics: [ DDC ],
         ro_topics: [],
         rw_topics: []
       }
