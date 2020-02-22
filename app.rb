@@ -9,9 +9,7 @@ require 'base64'
 require 'timeout'
 
 class ESP32CamHomeBusApp < HomeBusApp
-  def DDC
-    'org.homebus.image'
-  end
+  DDC = 'org.homebus.image'
 
   def initialize(options)
     @options = options
